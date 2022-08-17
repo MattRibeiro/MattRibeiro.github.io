@@ -1,4 +1,10 @@
+
 var base64string = atob(window.location.hash.substring(1).replace(/_/g, '/').replace(/-/g, '+'))
+
+// var base64string = `[
+//     {"label":"Accuracy", "yAxisID": "left", "data":[15, 20, 25, 20, 15]}, 
+//     {"label":"Speed", "yAxisID": "right", "data":[0.5, 0.20, 0.7, 0.9, 0.15]}
+//     ]`
 var jsonObject = JSON.parse(base64string)
 console.log('Json object', jsonObject)
 
@@ -18,11 +24,14 @@ for (var i = 0; i < jsonObject.length; i++) {
     chartData.data.datasets.push( { 
         label: jsonObject[i].label, 
         data: jsonObject[i].data,
-             borderColor: borderColors[i % borderColors.length],
-             tension: 0.1
+        yAxisID: jsonObject[i].yAxisID,
+        borderColor: borderColors[i % borderColors.length],
+        tension: 0.1
     })
 }
 chartData.data.labels = Array.from({length: epochs}, (_, i) => i + 1);
-
+chartData.options = {
+    scales: { 'left': {type: 'linear', position: 'left' }, 'right': {type: 'linear', position: 'right' } }
+};
 const ctx = document.getElementById('myChart').getContext('2d');
 const myChart = new Chart(ctx, chartData);
